@@ -2,7 +2,6 @@
 package exec
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/jrmccluskey/bf-go/program"
@@ -21,8 +20,10 @@ func NewRunner(prog *program.InstructionState, data *tape.DataState) *Runner {
 }
 
 // Execute runs the provided bf program.
-func (r *Runner) Execute() error {
+func (r *Runner) Execute(input []byte) error {
 	inst := r.prog.GetInstruction()
+	inputCounter := 0
+	inputSize := len(input)
 	for inst != 0 {
 		switch string(inst) {
 		case ">":
@@ -36,7 +37,11 @@ func (r *Runner) Execute() error {
 		case ".":
 			fmt.Print(string(r.data.OutputByte()))
 		case ",":
-			return errors.New("operation , (accept byte) NYI")
+			if inputCounter >= inputSize {
+				continue
+			}
+			r.data.AcceptByte(input[inputCounter])
+			inputCounter++
 		case "[":
 			if r.data.OutputByte() == 0 {
 				r.prog.SkipLoop()

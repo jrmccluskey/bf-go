@@ -14,7 +14,7 @@ const (
 
 // NewDataState initializes a new BF tracking state struct, allocating memory for the tape and a stack for looping.
 func NewDataState() *DataState {
-	return &DataState{tape: make([]byte, tapeLength, tapeLength), index: startIndex}
+	return &DataState{tape: make([]byte, tapeLength), index: startIndex}
 }
 
 // IncrementPointer moves the data pointer to the next cell.

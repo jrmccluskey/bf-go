@@ -15,7 +15,10 @@ import (
 
 var (
 	programFile = flag.String("program_file", "", "Path to a .bf file to execute (required).")
+	input       = flag.String("input", "", "Input to the .bf program, interpreted as bytes (optional).")
 )
+
+var inputBytes []byte
 
 func checkFlags() error {
 	if *programFile == "" {
@@ -24,6 +27,8 @@ func checkFlags() error {
 	if !strings.HasSuffix(*programFile, ".bf") {
 		return errors.New("file must have a .bf extention")
 	}
+	inputBytes = []byte(*input)
+
 	return nil
 }
 
@@ -43,7 +48,7 @@ func main() {
 	tapeState := tape.NewDataState()
 
 	progRunner := exec.NewRunner(instState, tapeState)
-	if err := progRunner.Execute(); err != nil {
+	if err := progRunner.Execute(inputBytes); err != nil {
 		panic(err)
 	}
 }
